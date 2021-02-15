@@ -1,2 +1,14 @@
 ---
 # tasks file for snockow6.btrfs
+- name: install btrfs packages
+  include: install.yml
+
+- name: check and create btrfs filesystem
+  loop: "{{ btrfs_filesystem }}"
+  include: filesystem.yml
+  when: item.name is defined
+
+- name: check and create btrfs subvolume
+  loop: "{{ btrfs_subvolume }}"
+  include: subvolume.yml
+  when: item.name is defined

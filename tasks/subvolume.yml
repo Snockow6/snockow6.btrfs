@@ -12,3 +12,10 @@
   when:
     - result_subvolume_list.rc == 1
     - item.state | default('present') == 'present'
+
+- name: Delete btrfs Subvolume
+  command: >-
+    btrfs subvolume delete {{ item.name }}
+  when:
+    - result_subvolume_list.rc == 0
+    - item.state | default('present') == 'absent'

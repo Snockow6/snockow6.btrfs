@@ -1,0 +1,35 @@
+---
+- name: Check if btrfs filesystem exists
+  command: >-
+    btrfs fi show {{ item.name }}
+  register: result_filesystem_list
+  ignore_errors: yes
+  changed_when: false
+  when:
+    - item.state | default('present') == 'present'
+
+- name: create btrfs filesystem
+  command: >-
+    mkfs.btrfs -L {{ item.name }}
+    {{ '-m ' + item.mode if item.mode else '' }}
+    {{ '-d ' + item.mode if item.mode else '' }}
+    {{ item.devices | join(' ') }}
+  when:
+    - item.state | default('present') == 'present' #check wether it should exits
+    - result_filesystem_list.rc == 1
+
+- name: mount btrfs filesystem
+  ansible.posix.mount:
+    path: "{{ item.mountpoint }}"
+    src: "{{ item.devices[0] }}"
+    fstype: btrfs
+    state: mounted
+  when:
+    - item.state | default('present') == 'present'
+
+- name: umount btrfs filesystem
+  ansible.posix.mount:
+    path: "{{ item.mountpoint }}"
+    state: unmounted
+  when:
+    - item.state | default('present') == 'absent'

@@ -1,0 +1,11 @@
+
+btrfs_filesystem:
+  - name: "Tank"
+    mountpoint: "/mnt/Tank"
+    mode: ""
+    devices: ["/dev/vdb1"]
+    state: "absent"
+
+btrfs_subvolume:
+  - name: "/mnt/Tank/kvm"
+    state: "present"
