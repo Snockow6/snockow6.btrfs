@@ -1,0 +1,5 @@
+---
+- name: install btrfs-progs
+  package:
+    name: btrfs-progs
+    state: latest
