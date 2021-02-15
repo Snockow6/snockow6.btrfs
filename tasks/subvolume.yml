@@ -1,0 +1,14 @@
+---
+- name: Check if btrfs subvolume exists
+  command: >-
+    btrfs subvolume show {{ item.name }}
+  register: result_subvolume_list
+  ignore_errors: yes
+  changed_when: false
+
+- name: Create btrfs Subvolume
+  command: >-
+    btrfs subvolume create {{ item.name }}
+  when:
+    - result_subvolume_list.rc == 1
+    - item.state | default('present') == 'present'
